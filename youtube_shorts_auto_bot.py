@@ -763,5 +763,83 @@ def main():
         upload_short_to_youtube(youtube, video_path, plan)
 
 
+
+# ---------------------------------------------------------------------------
+# Upgrade: safe manual-review workflow helpers (v2)
+# ---------------------------------------------------------------------------
+# These helpers deliberately do NOT upload. They validate a generated plan,
+# create a review manifest, and only allow a human-approved upload command.
+PLAN_SCHEMA_VERSION = 2
+REVIEW_DIR = Path("review_queue")
+
+
+def validate_short_plan(plan: Dict) -> List[str]:
+    """Return validation errors; an empty list means structurally valid."""
+    errors: List[str] = []
+    if not isinstance(plan, dict):
+        return ["Plan must be a JSON object."]
+    if not isinstance(plan.get("title"), str) or not plan["title"].strip():
+        errors.append("Missing title.")
+    scenes = plan.get("scenes")
+    if not isinstance(scenes, list) or len(scenes) != 6:
+        errors.append("Plan must contain exactly six scenes.")
+        return errors
+    for index, scene in enumerate(scenes, start=1):
+        if not isinstance(scene, dict):
+            errors.append(f"Scene {index} must be an object.")
+            continue
+        if not isinstance(scene.get("spoken_text"), str) or not scene["spoken_text"].strip():
+            errors.append(f"Scene {index}: spoken_text is missing.")
+        if not isinstance(scene.get("image_prompt"), str) or not scene["image_prompt"].strip():
+            errors.append(f"Scene {index}: image_prompt is missing.")
+        if not isinstance(scene.get("caption_highlight"), str) or not scene["caption_highlight"].strip():
+            errors.append(f"Scene {index}: caption_highlight is missing.")
+    tags = plan.get("tags", [])
+    if not isinstance(tags, list) or any(not isinstance(tag, str) for tag in tags):
+        errors.append("Tags must be a list of strings.")
+    return errors
+
+
+def save_manual_review_manifest(plan: Dict, video_path: Path) -> Path:
+    """Save metadata for a person to review before any YouTube upload."""
+    errors = validate_short_plan(plan)
+    if errors:
+        raise ValueError("Plan validation failed: " + "; ".join(errors))
+    if not video_path.exists() or video_path.stat().st_size == 0:
+        raise FileNotFoundError(f"Rendered video missing or empty: {video_path}")
+    REVIEW_DIR.mkdir(parents=True, exist_ok=True)
+    manifest = {
+        "schema_version": PLAN_SCHEMA_VERSION,
+        "created_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "status": "PENDING_HUMAN_APPROVAL",
+        "video_file": str(video_path.resolve()),
+        "title": plan.get("title", ""),
+        "description": plan.get("description", ""),
+        "tags": plan.get("tags", []),
+        "made_for_kids": None,
+        "checks": {
+            "video_exists": True,
+            "plan_schema_valid": True,
+            "human_content_review_required": True,
+            "audience_setting_review_required": True,
+        },
+        "upload_allowed": False,
+    }
+    safe_name = re.sub(r"[^a-zA-Z0-9_-]+", "_", str(plan.get("title", "short")))[:60]
+    output = REVIEW_DIR / f"{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}_{safe_name}.json"
+    output.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    return output
+
+
+def print_manual_review_summary(plan: Dict, video_path: Path, manifest_path: Path) -> None:
+    """Print a clear hand-off; this function never uploads."""
+    print("\\n=== MANUAL REVIEW REQUIRED ===")
+    print(f"Video: {video_path.resolve()}")
+    print(f"Title: {plan.get('title', '(missing)')}")
+    print(f"Review manifest: {manifest_path.resolve()}")
+    print("Review factual accuracy, rights, captions, audio, and audience designation.")
+    print("No video was uploaded. Upload only after explicit human approval.")
+
+
 if __name__ == "__main__":
     main()

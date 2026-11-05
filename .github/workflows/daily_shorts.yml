@@ -1,0 +1,47 @@
+name: Shorts generation (manual review only)
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 20:00 UTC = 1:30 AM IST; change as needed.
+    - cron: "0 20 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shorts-generation
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install system video dependencies
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+      - name: Generate video (upload is intentionally disabled)
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python youtube_shorts_auto_bot.py --dry-run
+      - name: Store generated files for human review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shorts-review-${{ github.run_number }}
+          path: |
+            output_shorts/
+            review_queue/
+            viral_diagnostics_log.json
+          if-no-files-found: warn
+          retention-days: 7
