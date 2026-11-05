@@ -15,11 +15,13 @@ concurrency:
 
 jobs:
   generate:
-    runs-on: ubuntu-latest
+    # Pin the OS to avoid the ubuntu-latest migration to Ubuntu 26.
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      # Node.js 24-compatible action versions.
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
           cache: pip
@@ -36,7 +38,7 @@ jobs:
         run: python youtube_shorts_auto_bot.py --dry-run
       - name: Store generated files for human review
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: shorts-review-${{ github.run_number }}
           path: |
