@@ -434,35 +434,96 @@ async def synthesize_scene_audio(text: str, voice: str, rate: str, out_path: Pat
 
 def download_free_ai_image(prompt: str, out_path: Path, seed: int):
     """
-    Downloads a free 1080x1920 vertical AI illustration from Pollinations.ai (Flux model, $0, no key).
-    Includes automatic retry and procedural fallback canvas if offline.
+    Generate a real scene image with Gemini Image when GEMINI_API_KEY is set.
+    Pollinations is an optional fallback (requires POLLINATIONS_API_KEY).
+    Never silently substitute a plain gradient: validate every downloaded image.
     """
-    encoded_prompt = urllib.parse.quote(prompt)
-    url = (
-        f"https://image.pollinations.ai/prompt/{encoded_prompt}"
-        f"?width=1080&height=1920&seed={seed}&model=flux&nologo=true"
-    )
-    for attempt in range(3):
+    from PIL import Image, ImageDraw, ImageFilter
+    import io
+
+    def save_valid_image(raw: bytes) -> bool:
         try:
-            resp = requests.get(url, timeout=45)
-            if resp.status_code == 200 and len(resp.content) > 5000:
-                out_path.write_bytes(resp.content)
+            im = Image.open(io.BytesIO(raw)).convert("RGB")
+            if im.width < 512 or im.height < 512:
+                return False
+            im.save(out_path, format="JPEG", quality=95, optimize=True)
+            return True
+        except Exception:
+            return False
+
+    # Gemini image generation uses the same Gemini API key already configured for scripts.
+    gemini_key = os.environ.get("GEMINI_API_KEY")
+    if gemini_key:
+        try:
+            endpoint = (
+                "https://generativelanguage.googleapis.com/v1beta/models/"
+                "gemini-2.5-flash-image:generateContent"
+                f"?key={gemini_key}"
+            )
+            response = requests.post(endpoint, json={
+                "contents": [{"parts": [{"text": (
+                    "Create one polished cinematic vertical 9:16 illustration for a YouTube Short. "
+                    "Show a clear central subject, rich depth, expressive characters, vibrant color, "
+                    "professional 3D animated-film lighting, detailed environment. No words, letters, "
+                    "logos, subtitles, watermarks, or borders. Scene: " + prompt
+                )}]}],
+                "generationConfig": {"responseModalities": ["TEXT", "IMAGE"]},
+            }, timeout=120)
+            response.raise_for_status()
+            payload = response.json()
+            for part in payload.get("candidates", [{}])[0].get("content", {}).get("parts", []):
+                inline = part.get("inlineData") or part.get("inline_data")
+                if inline and inline.get("data"):
+                    import base64
+                    if save_valid_image(base64.b64decode(inline["data"])):
+                        print("[+] Gemini generated a scene image.")
+                        return
+            print("[!] Gemini returned no image data; trying Pollinations.")
+        except Exception as exc:
+            print(f"[!] Gemini image generation failed: {exc}")
+
+    # Current Pollinations endpoint. A secret key is optional in env but required by service.
+    pollinations_key = os.environ.get("POLLINATIONS_API_KEY")
+    if pollinations_key:
+        try:
+            encoded = urllib.parse.quote(prompt[:1800])
+            url = f"https://gen.pollinations.ai/image/{encoded}?model=black-forest-labs/flux.1-schnell&width=1024&height=1792&seed={seed}"
+            response = requests.get(url, headers={"Authorization": f"Bearer {pollinations_key}"}, timeout=120)
+            response.raise_for_status()
+            if save_valid_image(response.content):
+                print("[+] Pollinations generated a scene image.")
                 return
         except Exception as exc:
-            print(f"[!] Image download attempt {attempt + 1} failed: {exc}")
-            time.sleep(2)
+            print(f"[!] Pollinations image generation failed: {exc}")
 
-    # Fallback: create a vibrant gradient poster if network is unavailable
-    from PIL import Image, ImageDraw
-
-    img = Image.new("RGB", (1080, 1920), color=(20, 30, 70))
-    draw = ImageDraw.Draw(img)
-    for y in range(1920):
-        r = int(20 + (y / 1920) * 60)
-        g = int(30 + (y / 1920) * 100)
-        b = int(90 + (y / 1920) * 140)
-        draw.line([(0, y), (1080, y)], fill=(r, g, b))
-    img.save(out_path)
+    # Deterministic, illustrated fallback (not a blank gradient). Add layered shapes,
+    # a focal subject, stars/particles and lighting so every scene still has artwork.
+    print("[!] AI image providers unavailable. Creating illustrated fallback scene.")
+    w, h = 1080, 1920
+    rng = random.Random(seed)
+    top = tuple(rng.randint(12, 65) for _ in range(3))
+    bottom = tuple(rng.randint(70, 180) for _ in range(3))
+    img = Image.new("RGB", (w, h))
+    px = img.load()
+    for y in range(h):
+        t = y / (h - 1)
+        col = tuple(int(top[i] * (1-t) + bottom[i] * t) for i in range(3))
+        for x in range(w):
+            px[x, y] = col
+    draw = ImageDraw.Draw(img, "RGBA")
+    # Atmospheric stars, glows and foreground landscape.
+    for _ in range(150):
+        x, y = rng.randrange(w), rng.randrange(h)
+        rad = rng.randrange(2, 9)
+        draw.ellipse((x-rad, y-rad, x+rad, y+rad), fill=(255,255,255,rng.randrange(70,210)))
+    draw.ellipse((180, 480, 900, 1200), fill=(255,190,55,55), outline=(255,220,120,180), width=12)
+    draw.ellipse((330, 630, 750, 1050), fill=(20,35,80,210), outline=(130,220,255,255), width=16)
+    draw.polygon([(0,1450),(220,1200),(430,1500),(700,1180),(1080,1500),(1080,1920),(0,1920)], fill=(8,15,35,240))
+    # Bright stylized foreground explorer/subject.
+    draw.ellipse((420,1120,660,1360), fill=(255,190,80,255), outline=(255,255,255,255), width=8)
+    draw.rounded_rectangle((365,1300,715,1630), radius=100, fill=(45,190,235,255), outline=(255,255,255,230), width=10)
+    img = img.filter(ImageFilter.GaussianBlur(0.4))
+    img.save(out_path, format="JPEG", quality=94)
 
 
 # ---------------------------------------------------------------------------
@@ -484,12 +545,13 @@ def render_caption_overlay_frame(
     img = Image.open(base_img_path).convert("RGB").resize((1080, 1920), Image.Resampling.LANCZOS)
 
     # Smooth Ken Burns zoom-in
-    zoom = 1.0 + 0.12 * progress
-    crop_w = int(1080 / zoom)
-    crop_h = int(1920 / zoom)
-    left = (1080 - crop_w) // 2
-    top = (1920 - crop_h) // 2
-    img = img.crop((left, top, left + crop_w, top + crop_h)).resize(
+    # Animated camera move: slow zoom plus a gentle diagonal pan per scene.
+    zoom = 1.0 + 0.18 * progress
+    crop_w = max(1, int(1080 / zoom))
+    crop_h = max(1, int(1920 / zoom))
+    pan_x = int((1080 - crop_w) * (0.25 + 0.5 * progress))
+    pan_y = int((1920 - crop_h) * (0.65 - 0.3 * progress))
+    img = img.crop((pan_x, pan_y, pan_x + crop_w, pan_y + crop_h)).resize(
         (1080, 1920), Image.Resampling.LANCZOS
     )
 
