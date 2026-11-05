@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>US Viral YouTube Shorts Auto-Studio (100% Free Automation)</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #090d16; color: #f1f5f9; }
+    .glass-card { background: rgba(17, 24, 39, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .tab-active { background: linear-gradient(135deg, #ef4444 0%, #f97316 100%); color: #ffffff; font-weight: 700; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.35); }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-red-500 selection:text-white">
+
+  <!-- Toast Notification -->
+  <div id="toastBox" class="fixed top-4 right-4 z-50 hidden max-w-sm px-4 py-3 rounded-xl shadow-2xl border border-emerald-500/40 bg-slate-900/95 text-emerald-300 text-sm font-medium flex items-center gap-2.5 transition-all">
+    <span id="toastIcon" class="text-lg">✅</span>
+    <span id="toastMsg">Action completed!</span>
+  </div>
+
+  <!-- Top Header -->
+  <header class="border-b border-slate-800/80 bg-slate-950/90 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg shadow-red-500/20 font-extrabold text-lg">
+          ▶
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white">US Viral Shorts Auto-Studio</h1>
+            <span class="px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">₹0 Free Stack</span>
+          </div>
+          <p class="text-xs text-slate-400">Daily US Niche AI • 9:16 Video Renderer • Viral Diagnostics • GitHub Cloud Setup</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex flex-wrap items-center gap-1.5 bg-slate-900 p-1 rounded-xl border border-slate-800">
+        <button id="tabBtnStudio" onclick="switchTab('studio')" class="tab-active px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all">
+          🎬 1. Shorts Studio
+        </button>
+        <button id="tabBtnNiche" onclick="switchTab('niche')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm text-slate-300 hover:text-white transition-all">
+          🔥 2. US Niche & Script AI
+        </button>
+        <button id="tabBtnDiag" onclick="switchTab('diag')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm text-slate-300 hover:text-white transition-all">
+          📊 3. Viral Check (Why Not Viral?)
+        </button>
+        <button id="tabBtnCloud" onclick="switchTab('cloud')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm text-slate-300 hover:text-white transition-all">
+          🚀 4. Auto-Upload Setup
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Workspace Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-5">
+
+    <!-- ==================== TAB 1: LIVE 9:16 SHORTS STUDIO ==================== -->
+    <section id="viewStudio" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <!-- Left Column: 9:16 Vertical Shorts Canvas Player -->
+      <div class="lg:col-span-5 flex flex-col items-center glass-card rounded-2xl p-4 sm:p-5">
+        <div class="w-full flex items-center justify-between mb-3">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+            Live 9:16 Shorts Preview (1080×1920)
+          </span>
+          <span id="sceneCounterBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-800 text-amber-300 border border-amber-500/30">
+            Scene 1 / 6
+          </span>
+        </div>
+
+        <!-- 9:16 Canvas Wrapper -->
+        <div class="relative w-full max-w-[320px] aspect-[9/16] rounded-2xl overflow-hidden border-2 border-slate-700 shadow-2xl bg-black">
+          <canvas id="shortsCanvas" width="540" height="960" class="w-full h-full block"></canvas>
+        </div>
+
+        <!-- Player Controls -->
+        <div class="w-full max-w-[320px] mt-4 flex flex-col gap-2.5">
+          <div class="grid grid-cols-2 gap-2">
+            <button id="btnPlayShort" onclick="togglePlayShort()" class="w-full py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white shadow-lg shadow-red-500/25 flex items-center justify-center gap-1.5 transition-all">
+              <span id="playBtnIcon">▶</span> <span id="playBtnText">Play With US Voice</span>
+            </button>
+            <button id="btnRecordShort" onclick="recordAndDownloadShort()" class="w-full py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-1.5 transition-all">
+              ⬇ Export Video (.webm)
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between gap-2 bg-slate-900/90 px-3 py-2 rounded-xl border border-slate-800">
+            <button id="btnPrevScene" onclick="stepScene(-1)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold">◀ Prev Scene</button>
+            <button id="btnMuteAudio" onclick="toggleMuteAudio()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-amber-300">🔊 Voice + BGM: ON</button>
+            <button id="btnNextScene" onclick="stepScene(1)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold">Next Scene ▶</button>
+          </div>
+          <p id="recordStatusText" class="text-[11px] text-center text-slate-400">
+            Tip: Click "Play With US Voice" to hear American narration + background synth, or "Export Video" to download!
+          </p>
+        </div>
+      </div>
+
+      <!-- Right Column: Active Short Script, Scene Editor & SEO Metadata -->
+      <div class="lg:col-span-7 flex flex-col gap-4">
+        <!-- Quick Niche Switcher Bar -->
+        <div class="glass-card rounded-2xl p-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div>
+              <h2 class="text-sm sm:text-base font-bold text-white">Today's Auto-Selected US High-RPM Niche</h2>
+              <p class="text-xs text-slate-400">Click any preset niche below or generate a fresh AI script in Tab 2</p>
+            </div>
+            <button onclick="cyclePresetShort()" class="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 text-xs font-bold transition-all">
+              🎲 Load Next Viral Preset
+            </button>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="nichePillContainer">
+            <!-- Dynamically populated buttons -->
+          </div>
+        </div>
+
+        <!-- Active Video Metadata & Viral Hook Box -->
+        <div class="glass-card rounded-2xl p-4 space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span id="activeNicheBadge" class="px-2.5 py-1 rounded-lg bg-red-500/20 text-red-300 border border-red-500/30 text-xs font-bold">
+              3D 'What If' Science
+            </span>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-emerald-400 font-semibold">Audience: Family-Friendly (Not Made For Kids = Full US RPM)</span>
+              <button onclick="copySeoMetadata()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700">
+                📋 Copy Title & Tags
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold uppercase text-slate-400 mb-1">Viral Short Title (&lt;50 chars)</label>
+              <input id="shortTitleInput" type="text" oninput="updateMetadataFromInputs()" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-sm font-bold text-white focus:outline-none focus:border-red-500" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold uppercase text-slate-400 mb-1">Viral Fix Applied Automatically</label>
+              <input id="viralFixInput" type="text" readonly class="w-full px-3 py-2 rounded-xl bg-slate-900/60 border border-emerald-500/30 text-xs text-emerald-300 font-medium" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold uppercase text-slate-400 mb-1">US SEO Description & Tags</label>
+            <textarea id="shortDescInput" rows="2" oninput="updateMetadataFromInputs()" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-slate-200 focus:outline-none focus:border-red-500"></textarea>
+          </div>
+        </div>
+
+        <!-- 6-Scene Storyboard & Live Caption Editor -->
+        <div class="glass-card rounded-2xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-bold text-white">6-Scene Viral Storyboard (Click Any Scene to Jump & Edit)</h3>
+            <span class="text-xs text-slate-400">Est. Duration: ~50 sec (Infinite Loop Enabled)</span>
+          </div>
+          <div id="scenesListContainer" class="space-y-2.5 max-h-[340px] overflow-y-auto pr-1">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 2: US NICHE ANALYZER & GEMINI AI GENERATOR ==================== -->
+    <section id="viewNiche" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left: Daily US Niche Comparison Table -->
+        <div class="lg:col-span-7 glass-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-base font-bold text-white">US High-Retention Niche Radar (Kids + Adult Appeal)</h2>
+              <p class="text-xs text-slate-400">Analyzed for maximum US Shorts Feed velocity without COPPA revenue penalties</p>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              Updated Daily
+            </span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs sm:text-sm">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 uppercase text-[11px]">
+                  <th class="py-2.5 px-2">US Niche</th>
+                  <th class="py-2.5 px-2">Target Appeal</th>
+                  <th class="py-2.5 px-2 text-right">Est. US Shorts RPM</th>
+                  <th class="py-2.5 px-2 text-right">Viral Score</th>
+                  <th class="py-2.5 px-2 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/70">
+                <tr>
+                  <td class="py-3 px-2 font-bold text-white">🌍 3D 'What If' Science</td>
+                  <td class="py-3 px-2 text-slate-300">Kids (8–15) + Curious Adults</td>
+                  <td class="py-3 px-2 text-right font-semibold text-emerald-400">$0.15 – $0.22</td>
+                  <td class="py-3 px-2 text-right"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">98/100</span></td>
+                  <td class="py-3 px-2 text-right"><button onclick="selectPresetByIndex(0); switchTab('studio');" class="px-2.5 py-1 rounded-lg bg-red-500 hover:bg-red-600 text-white text-xs font-bold">Load</button></td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-2 font-bold text-white">🐙 Animal Superpowers</td>
+                  <td class="py-3 px-2 text-slate-300">Kids + Nature/Pet Lovers</td>
+                  <td class="py-3 px-2 text-right font-semibold text-emerald-400">$0.14 – $0.19</td>
+                  <td class="py-3 px-2 text-right"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">95/100</span></td>
+                  <td class="py-3 px-2 text-right"><button onclick="selectPresetByIndex(1); switchTab('studio');" class="px-2.5 py-1 rounded-lg bg-red-500 hover:bg-red-600 text-white text-xs font-bold">Load</button></td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-2 font-bold text-white">🧩 99% Fail Visual Riddles</td>
+                  <td class="py-3 px-2 text-slate-300">Students + Families (High Comments)</td>
+                  <td class="py-3 px-2 text-right font-semibold text-emerald-400">$0.12 – $0.18</td>
+                  <td class="py-3 px-2 text-right"><span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">94/100</span></td>
+                  <td class="py-3 px-2 text-right"><button onclick="selectPresetByIndex(2); switchTab('studio');" class="px-2.5 py-1 rounded-lg bg-red-500 hover:bg-red-600 text-white text-xs font-bold">Load</button></td>
+                </tr>
+                <tr>
+                  <td class="py-3 px-2 font-bold text-white">🧬 Weird Human Body Facts</td>
+                  <td class="py-3 px-2 text-slate-300">All Ages (Zack D. Films Style)</td>
+                  <td class="py-3 px-2 text-right font-semibold text-emerald-400">$0.16 – $0.24</td>
+                  <td class="py-3 px-2 text-right"><span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">97/100</span></td>
+                  <td class="py-3 px-2 text-right"><button onclick="selectPresetByIndex(3); switchTab('studio');" class="px-2.5 py-1 rounded-lg bg-red-500 hover:bg-red-600 text-white text-xs font-bold">Load</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-200 space-y-1">
+            <p class="font-bold">💡 Important COPPA Monetization Rule (US Audience):</p>
+            <p>Never mark your channel as "Made exclusively for kids" — doing so disables comments, personalized ads, and drops RPM by 80%. Instead, use <strong>Family-Friendly 3D Infotainment</strong> (`selfDeclaredMadeForKids = false`) so kids AND adults watch and you earn full US RPM!</p>
+          </div>
+        </div>
+
+        <!-- Right: Live Gemini AI Custom Script Generator -->
+        <div class="lg:col-span-5 glass-card rounded-2xl p-5 space-y-4">
+          <h2 class="text-base font-bold text-white">🤖 Generate New Viral Short via Free Gemini API</h2>
+          <p class="text-xs text-slate-400">Enter your free Google AI Studio key (or leave blank to use the built-in offline topic generator) and type any curiosity idea:</p>
+
+          <div class="space-y-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Free Gemini API Key (Optional for Instant Offline Remix)</label>
+              <input id="geminiKeyInput" type="password" placeholder="AIzaSy... (from aistudio.google.com/apikey)" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white focus:outline-none focus:border-red-500" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Custom Topic or Trend Keyword</label>
+              <input id="customTopicInput" type="text" placeholder="e.g. What If The Moon Turned Into Cheese? / Why Sharks Glow" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white focus:outline-none focus:border-red-500" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Select Visual Style & Niche</label>
+              <select id="customNicheSelect" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-xs text-white">
+                <option value="what_if_science">3D 'What If' Science & Space Mysteries</option>
+                <option value="animal_superpowers">Bizarre Animal Superpowers & Deep Ocean</option>
+                <option value="interactive_riddles">99% Fail Interactive Visual Riddles</option>
+                <option value="how_body_works">Weird Human Body Microscopic Facts</option>
+              </select>
+            </div>
+
+            <button id="btnGenerateCustom" onclick="generateCustomShortPlan()" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 font-bold text-xs sm:text-sm text-white shadow-lg shadow-red-500/20 transition-all">
+              ✨ Generate 6-Scene Viral Short & Load Into Studio
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: VIRAL DIAGNOSTICS ENGINE ==================== -->
+    <section id="viewDiag" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left: Input Metrics from Recent Short -->
+        <div class="lg:col-span-5 glass-card rounded-2xl p-5 space-y-4">
+          <div>
+            <h2 class="text-base font-bold text-white">🔍 Check Why Your Video Isn't Going Viral</h2>
+            <p class="text-xs text-slate-400">Enter your recent Short's metrics from YouTube Studio (or test a scenario) to diagnose algorithmic bottlenecks:</p>
+          </div>
+
+          <div class="space-y-3">
+            <div>
+              <label class="flex justify-between text-xs font-semibold text-slate-300 mb-1">
+                <span>Recent Short Views</span>
+                <span id="lblDiagViews" class="text-amber-300 font-bold">850 views</span>
+              </label>
+              <input id="inpDiagViews" type="range" min="50" max="50000" step="50" value="850" oninput="runViralDiagnostics()" class="w-full accent-red-500" />
+            </div>
+
+            <div>
+              <label class="flex justify-between text-xs font-semibold text-slate-300 mb-1">
+                <span>"Viewed" vs Swiped Away % (Target: &gt;75%)</span>
+                <span id="lblDiagSwipe" class="text-red-400 font-bold">58% Viewed</span>
+              </label>
+              <input id="inpDiagSwipe" type="range" min="25" max="95" step="1" value="58" oninput="runViralDiagnostics()" class="w-full accent-red-500" />
+            </div>
+
+            <div>
+              <label class="flex justify-between text-xs font-semibold text-slate-300 mb-1">
+                <span>Average Percentage Viewed / Retention (Target: &gt;95%)</span>
+                <span id="lblDiagRet" class="text-amber-300 font-bold">76% APV</span>
+              </label>
+              <input id="inpDiagRet" type="range" min="30" max="140" step="2" value="76" oninput="runViralDiagnostics()" class="w-full accent-red-500" />
+            </div>
+
+            <div>
+              <label class="flex justify-between text-xs font-semibold text-slate-300 mb-1">
+                <span>Like-to-View Ratio % (Target: &gt;4.0%)</span>
+                <span id="lblDiagLikes" class="text-amber-300 font-bold">2.4% Likes</span>
+              </label>
+              <input id="inpDiagLikes" type="range" min="0.5" max="10.0" step="0.1" value="2.4" oninput="runViralDiagnostics()" class="w-full accent-red-500" />
+            </div>
+
+            <div>
+              <label class="flex justify-between text-xs font-semibold text-slate-300 mb-1">
+                <span>Comment Rate % (Target: &gt;0.15%)</span>
+                <span id="lblDiagComments" class="text-amber-300 font-bold">0.05% Comments</span>
+              </label>
+              <input id="inpDiagComments" type="range" min="0.0" max="0.60" step="0.01" value="0.05" oninput="runViralDiagnostics()" class="w-full accent-red-500" />
+            </div>
+          </div>
+
+          <button onclick="applyDiagnosticsFixToStudio()" class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-emerald-600/25 transition-all">
+            ⚡ Auto-Fix Active Script With These Diagnostics
+          </button>
+        </div>
+
+        <!-- Right: Live Diagnosis Output & Algorithm Scorecard -->
+        <div class="lg:col-span-7 glass-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div>
+              <h3 class="text-base font-bold text-white">YouTube Shorts Algorithm Diagnosis Report</h3>
+              <p class="text-xs text-slate-400">Real-time evaluation against US Shorts seed-pool promotion thresholds</p>
+            </div>
+            <div class="text-right">
+              <span class="text-[11px] uppercase text-slate-400 block">Viral Probability Score</span>
+              <span id="diagScoreBadge" class="text-2xl font-extrabold text-amber-400">52 / 100</span>
+            </div>
+          </div>
+
+          <div id="diagIssuesList" class="space-y-3">
+            <!-- Populated by runViralDiagnostics() -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: 1-CLICK CLOUD AUTO-UPLOAD SETUP ==================== -->
+    <section id="viewCloud" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left: Interactive 4-Step Setup Checklist & Secret Generator -->
+        <div class="lg:col-span-5 glass-card rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base font-bold text-white">🚀 100% Free Cloud Setup Checklist</h2>
+            <span id="setupProgressBadge" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">0 / 4 Done</span>
+          </div>
+          <p class="text-xs text-slate-400">Check off each step below to run your bot every day at 3:30 PM US Eastern Time on GitHub Actions for ₹0:</p>
+
+          <div class="space-y-2.5">
+            <label class="flex items-start gap-2.5 p-3 rounded-xl bg-slate-900/90 border border-slate-800 cursor-pointer">
+              <input type="checkbox" onchange="updateSetupProgress()" class="setup-check mt-1 accent-emerald-500" />
+              <span class="text-xs text-slate-200">
+                <strong class="text-white block">1. Create Free Gemini API Key</strong>
+                Visit <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" class="text-red-400 underline">Google AI Studio API Keys</a> and copy your free `GEMINI_API_KEY`.
+              </span>
+            </label>
+
+            <label class="flex items-start gap-2.5 p-3 rounded-xl bg-slate-900/90 border border-slate-800 cursor-pointer">
+              <input type="checkbox" onchange="updateSetupProgress()" class="setup-check mt-1 accent-emerald-500" />
+              <span class="text-xs text-slate-200">
+                <strong class="text-white block">2. Create YouTube Data API v3 Credentials</strong>
+                Follow the <a href="https://developers.google.com/youtube/registering_an_application" target="_blank" rel="noopener" class="text-red-400 underline">YouTube API Registration Guide</a> to get `YT_CLIENT_ID`, `YT_CLIENT_SECRET`, and `YT_REFRESH_TOKEN`.
+              </span>
+            </label>
+
+            <label class="flex items-start gap-2.5 p-3 rounded-xl bg-slate-900/90 border border-slate-800 cursor-pointer">
+              <input type="checkbox" onchange="updateSetupProgress()" class="setup-check mt-1 accent-emerald-500" />
+              <span class="text-xs text-slate-200">
+                <strong class="text-white block">3. Upload Files to a Free GitHub Repository</strong>
+                Copy `youtube_shorts_auto_bot.py`, `requirements.txt`, and `.github/workflows/daily_shorts.yml` into your GitHub repo.
+              </span>
+            </label>
+
+            <label class="flex items-start gap-2.5 p-3 rounded-xl bg-slate-900/90 border border-slate-800 cursor-pointer">
+              <input type="checkbox" onchange="updateSetupProgress()" class="setup-check mt-1 accent-emerald-500" />
+              <span class="text-xs text-slate-200">
+                <strong class="text-white block">4. Add the 4 Repository Secrets & Click "Run Workflow"</strong>
+                In GitHub <em>Settings → Secrets and variables → Actions</em>, add your 4 keys and trigger your first automatic upload!
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Right: Ready-to-Copy Cloud Config Files -->
+        <div class="lg:col-span-7 glass-card rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="text-base font-bold text-white">Pre-Built GitHub Actions Workflow & Requirements</h3>
+              <p class="text-xs text-slate-400">No need to run `--init-ci` — copy or download these ready-made files directly:</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="copyConfigText('yamlCodeBlock', 'daily_shorts.yml copied!')" class="px-3 py-1.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-xs font-bold">
+                📋 Copy daily_shorts.yml
+              </button>
+              <button onclick="copyConfigText('reqsCodeBlock', 'requirements.txt copied!')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold">
+                📋 Copy requirements.txt
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between text-xs font-semibold text-slate-400 mb-1">
+              <span>File 1: <code>.github/workflows/daily_shorts.yml</code> (Runs Daily at 3:30 PM US EST)</span>
+            </div>
+            <pre id="yamlCodeBlock" class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-emerald-300 overflow-x-auto max-h-52">name: Daily Viral YouTube Shorts Bot (US Peak Hours)
+
+on:
+  schedule:
+    - cron: '30 19 * * *' # 3:30 PM US Eastern Time (1:00 AM IST)
+  workflow_dispatch:
+
+jobs:
+  create-and-upload-short:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install FFmpeg & Fonts
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core
+      - name: Install Python Packages
+        run: pip install --upgrade pip && pip install -r requirements.txt
+      - name: Run Viral Diagnostics, Render Short & Auto-Upload
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python3 youtube_shorts_auto_bot.py</pre>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between text-xs font-semibold text-slate-400 mb-1">
+              <span>File 2: <code>requirements.txt</code></span>
+            </div>
+            <pre id="reqsCodeBlock" class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-amber-300 overflow-x-auto">edge-tts>=6.1.12
+moviepy==1.0.3
+Pillow>=10.0.0
+numpy>=1.24.0
+requests>=2.31.0
+google-api-python-client>=2.120.0
+google-auth-oauthlib>=1.2.0
+google-auth-httplib2>=0.2.0</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // -------------------------------------------------------------------------
+    // Pre-Loaded High-Retention US Viral Shorts Presets (4 Niches x 6 Scenes)
+    // -------------------------------------------------------------------------
+    const PRESET_SHORTS = [
+      {
+        niche_id: "what_if_science",
+        niche_name: "3D 'What If' Science",
+        theme_colors: ["#0f172a", "#1e3a8a", "#f97316"],
+        icon: "🌍",
+        title: "Why You Can Never Dig Through The Earth 🌍 #Shorts",
+        description: "What would happen if you tried to dig a tunnel straight through the center of the Earth? Find out why the deepest hole ever dug had to stop! #Shorts #whatif #science #curiosity #animation #facts",
+        viral_fix: "0-3s Extreme Curiosity Hook + Scene 4 Comment Trigger + Infinite Loop Ending",
+        scenes: [
+          { scene_number: 1, badge: "DIG THROUGH EARTH?! 🌍", spoken: "What would actually happen if you tried to dig a tunnel straight through the Earth?", visual_type: "earth_drill" },
+          { scene_number: 2, badge: "30 FEET DOWN 👇", spoken: "At just thirty feet down, you pass all house foundations and underground water pipes.", visual_type: "underground_pipes" },
+          { scene_number: 3, badge: "7.5 MILES DEEP! 🔥", spoken: "At seven miles deep, you reach the Kola Borehole, the deepest hole humans ever dug!", visual_type: "deep_cavern" },
+          { scene_number: 4, badge: "MELTING ROCK! 🌋", spoken: "Down here, solid rock hits three hundred fifty degrees and acts like sticky plastic! How deep could you survive? Comment below!", visual_type: "molten_rock" },
+          { scene_number: 5, badge: "18,000 MPH! 🚀", spoken: "If you wore an indestructible suit and jumped in, gravity would pull you at eighteen thousand miles per hour!", visual_type: "gravity_fall" },
+          { scene_number: 6, badge: "42 MINUTES! ⏱️", spoken: "In just forty-two minutes you pop out on the other side, which is why scientists still ask...", visual_type: "earth_exit" }
+        ]
+      },
+      {
+        niche_id: "animal_superpowers",
+        niche_name: "Animal Superpowers",
+        theme_colors: ["#042f2e", "#0f766e", "#38bdf8"],
+        icon: "🐙",
+        title: "The Immortal Creature That Never Dies 🪼 #Shorts",
+        description: "Meet the Turritopsis dohrnii, the real-life immortal jellyfish that can reset its own age back to a baby! #Shorts #animals #ocean #science #curiosity #facts",
+        viral_fix: "High-Contrast Bioluminescent Visual + Mid-Video Poll Question + Loop Payoff",
+        scenes: [
+          { scene_number: 1, badge: "LIVES FOREVER?! 🪼", spoken: "Did you know there is a tiny glowing creature in the ocean that can literally cheat death?", visual_type: "jellyfish_glow" },
+          { scene_number: 2, badge: "TINY AS A PINKY NAIL 🤏", spoken: "It is called the Immortal Jellyfish, and it is smaller than your pinky fingernail!", visual_type: "tiny_scale" },
+          { scene_number: 3, badge: "REVERSE AGING! ⏪", spoken: "Whenever it gets old or injured, it does something no human can ever do.", visual_type: "dna_reverse" },
+          { scene_number: 4, badge: "BACK TO A BABY! 👶", spoken: "It absorbs its own tentacles and turns back into a baby polyp! Would you want to live forever? Comment YES or NO!", visual_type: "polyp_reset" },
+          { scene_number: 5, badge: "INFINITE CLONES 🧬", spoken: "Then it sprouts hundreds of brand new genetically identical clones of itself!", visual_type: "clone_swarm" },
+          { scene_number: 6, badge: "SCIENTISTS STUNNED 🔬", spoken: "Biologists are studying its cells right now, because one day it could explain...", visual_type: "lab_mystery" }
+        ]
+      },
+      {
+        niche_id: "interactive_riddles",
+        niche_name: "99% Fail Visual Riddles",
+        theme_colors: ["#2e1065", "#6d28d9", "#facc15"],
+        icon: "🧩",
+        title: "Only 1% Can Pick The Safe Door In 5 Seconds 🚪 #Shorts",
+        description: "Can you solve this survival riddle before time runs out? Comment which door you picked! #Shorts #riddles #brainteaser #quiz #iqtest #puzzle",
+        viral_fix: "3-Door Survival Choice + 3-Second Countdown Timer + Comment Bait",
+        scenes: [
+          { scene_number: 1, badge: "99% FAIL THIS! 🧠", spoken: "You are trapped in a secret underwater vault and must pick one of three doors to escape!", visual_type: "three_doors" },
+          { scene_number: 2, badge: "DOOR 1: LAVA PIT 🌋", spoken: "Behind Door One is a room filled with boiling volcanic lava that melts steel instantly.", visual_type: "lava_door" },
+          { scene_number: 3, badge: "DOOR 2: ELECTRIC SHARKS 🦈", spoken: "Behind Door Two is a flooded tank full of hungry great white sharks and live electric wires!", visual_type: "shark_door" },
+          { scene_number: 4, badge: "DOOR 3: ACID GAS ☣️", spoken: "Behind Door Three is a chamber of freezing toxic gas! Pause and comment 1, 2, or 3 right now!", visual_type: "timer_choice" },
+          { scene_number: 5, badge: "THE SECRET CLUE 💡", spoken: "Look closely at Door Two: electric wires in salt water would instantly electrocute the sharks!", visual_type: "clue_reveal" },
+          { scene_number: 6, badge: "WAIT... ONE MORE! 🔑", spoken: "Just turn off the main power switch and swim up, which proves why only geniuses survive when...", visual_type: "escape_win" }
+        ]
+      },
+      {
+        niche_id: "how_body_works",
+        niche_name: "Weird Human Body Facts",
+        theme_colors: ["#450a0a", "#b91c1c", "#fbbf24"],
+        icon: "🧬",
+        title: "Why Your StomachDoesn't Digest Itself 🧪 #Shorts",
+        description: "Your stomach acid is strong enough to dissolve metal razor blades! So why doesn't it melt your own body? #Shorts #humanbody #science #biology #facts",
+        viral_fix: "Shocking Razor-Blade Acid Fact + Microscopic 3D Zoom + Seamless Loop",
+        scenes: [
+          { scene_number: 1, badge: "MELTS METAL?! 🧪", spoken: "Did you know the acid inside your stomach right now is strong enough to dissolve a metal razor blade?", visual_type: "stomach_acid" },
+          { scene_number: 2, badge: "HYDROCHLORIC ACID ⚡", spoken: "Your belly produces hydrochloric acid with a pH so low it would burn right through wood!", visual_type: "acid_drop" },
+          { scene_number: 3, badge: "WHY DON'T YOU MELT? 🤔", spoken: "So why doesn't your stomach accidentally digest itself right after you eat lunch?", visual_type: "question_zoom" },
+          { scene_number: 4, badge: "SECRET SLIME SHIELD 🛡️", spoken: "Your stomach walls are coated in a super thick alkaline mucus shield! Did you know this? Comment below!", visual_type: "mucus_shield" },
+          { scene_number: 5, badge: "NEW STOMACH EVERY 4 DAYS 🔄", spoken: "Even crazier, your stomach grows a brand new lining of cells every four days before acid can break through!", visual_type: "cell_regen" },
+          { scene_number: 6, badge: "BODY SUPERPOWER 💪", spoken: "Without that microscopic shield you wouldn't last an hour, which is why doctors always ask...", visual_type: "body_loop" }
+        ]
+      },
+      {
+        niche_id: "animal_superpowers",
+        niche_name: "Owl 270° Neck Superpower",
+        theme_colors: ["#1e1b4b", "#312e81", "#f59e0b"],
+        icon: "🦉",
+        title: "How Owls Twist Their Heads 270°! 🦉😱 #Shorts",
+        description: "Why don't owls pass out when they twist their heads 270 degrees backward? Comment YES or NO below! #Shorts #Animals #ScienceFacts #Owl #3DAnimation",
+        viral_fix: "270° X-Ray Neck Hook + Binary YES/NO Comment Trigger + Seamless Loop",
+        scenes: [
+          { scene_number: 1, badge: "270° NECK TWIST?! 🦉", spoken: "Because if a human twisted their neck two hundred and seventy degrees like an owl, it would instantly snap their arteries!", visual_type: "owl_twist" },
+          { scene_number: 2, badge: "EYES LOCKED IN PLACE! 👀", spoken: "You can roll your eyes side to side, but an owl has giant telescope tubes locked tightly in bone!", visual_type: "owl_eyes" },
+          { scene_number: 3, badge: "WHY HUMANS CAN'T! ⚠️", spoken: "In humans, twisting that far would pinch the neck arteries shut and cut off blood to the brain!", visual_type: "artery_pinch" },
+          { scene_number: 4, badge: "COMMENT YES OR NO! 👇", spoken: "Quick test! Can you look directly behind your back without turning your shoulders? Comment YES or NO right now!", visual_type: "neck_quiz" },
+          { scene_number: 5, badge: "SECRET BLOOD TANKS! 🩸", spoken: "Scientists found owls have hollow cavities in their neck bones and backup blood reservoirs right below their jaw!", visual_type: "blood_reservoir" },
+          { scene_number: 6, badge: "BUILT FOR STEALTH! 🔄", spoken: "Combined with soft feathers for silent flight, this bird has nature's ultimate stealth body, which is crazy...", visual_type: "silent_flight" }
+        ]
+      },
+      {
+        niche_id: "what_if_science",
+        niche_name: "If Earth Stopped Spinning",
+        theme_colors: ["#090d16", "#1e3a8a", "#ef4444"],
+        icon: "🌎",
+        title: "What If Earth Stopped Spinning For 1s? 🌍😱 #Shorts",
+        description: "What would actually happen if the Earth suddenly stopped spinning for just 1 second? Comment EQUATOR or POLE! #Shorts #WhatIf #SpaceFacts #Science",
+        viral_fix: "1,100 MPH Supersonic Shock Hook + Equator vs Pole Quiz + Loop Ending",
+        scenes: [
+          { scene_number: 1, badge: "1,100 MPH INSTANTLY?! 🌍", spoken: "Because if the Earth suddenly stopped spinning for just one second, you would instantly fly sideways at eleven hundred miles per hour!", visual_type: "earth_stop" },
+          { scene_number: 2, badge: "PLANETARY CAR CRASH! 🚗", spoken: "Right now the ground beneath your feet is spinning eastward faster than a speeding bullet!", visual_type: "earth_speed" },
+          { scene_number: 3, badge: "16X HURRICANE FORCE! 🌪️", spoken: "If the planet slammed on the brakes, the atmosphere would keep moving with sixteen times the force of a record cyclone!", visual_type: "super_wind" },
+          { scene_number: 4, badge: "EQUATOR OR POLE?! 👇", spoken: "Quick survival test! Where would you avoid flying sideways: the Equator or the North Pole? Comment EQUATOR or POLE!", visual_type: "pole_quiz" },
+          { scene_number: 5, badge: "OCEANS RUSH TO POLES! 🌊", spoken: "Without centrifugal force holding water at the middle, all oceans would rush toward the poles!", visual_type: "ocean_shift" },
+          { scene_number: 6, badge: "6 MONTHS OF NIGHT! ☀️", spoken: "Worst of all, a single day would last a full year, and you wouldn't even survive the first second...", visual_type: "year_day" }
+        ]
+      },
+      {
+        niche_id: "interactive_riddles",
+        niche_name: "Birds In A Truck Riddle",
+        theme_colors: ["#3b0764", "#581c87", "#22c55e"],
+        icon: "🚚",
+        title: "99% Fail The Birds In A Truck Riddle! 🚚🐦 #Shorts",
+        description: "If 500 pounds of birds start flying inside a closed truck, does the truck get LIGHTER or stay the SAME weight? Comment below! #Shorts #Riddles #Physics",
+        viral_fix: "99% Fail Bridge Weight Hook + Lighter vs Same Poll + Stanford 2x Lift Twist",
+        scenes: [
+          { scene_number: 1, badge: "99% FAIL THIS RIDDLE! 🚚", spoken: "Because ninety-nine percent of people get this simple truck riddle completely wrong on their first try!", visual_type: "truck_scale" },
+          { scene_number: 2, badge: "500 LBS TOO HEAVY! ⚠️", spoken: "Imagine a sealed delivery truck is carrying five hundred pounds of live pigeons and is too heavy for a shaky bridge.", visual_type: "pigeon_box" },
+          { scene_number: 3, badge: "MAKE THE BIRDS FLY?! 🕊️", spoken: "So the driver bangs on the wall of the sealed truck to make all the birds fly in mid-air while he drives across!", visual_type: "birds_hover" },
+          { scene_number: 4, badge: "LIGHTER OR SAME?! 👇", spoken: "You have five seconds! While the birds hover inside the closed truck, does it get LIGHTER or stay the SAME weight? Comment now!", visual_type: "weight_poll" },
+          { scene_number: 5, badge: "AIR PUSHES THE FLOOR! 💨", spoken: "If you guessed lighter, the bridge collapsed! By Newton's third law, their wings blast air down onto the floor with their exact weight!", visual_type: "newton_air" },
+          { scene_number: 6, badge: "2X HEAVIER ON FLAP! 🔄", spoken: "Stanford scientists proved each downward flap pushes with double the bird's weight, which is wild...", visual_type: "stanford_flap" }
+        ]
+      },
+      {
+        niche_id: "what_if_science",
+        niche_name: "If The Moon Disappeared",
+        theme_colors: ["#020617", "#1d4ed8", "#38bdf8"],
+        icon: "🌙",
+        title: "What If The Moon Disappeared Tonight? 🌙😱 #Shorts",
+        description: "What would actually happen to Earth if the Moon disappeared tonight? Comment PREDATOR or PREY! #Shorts #WhatIf #SpaceFacts #Moon #Astronomy",
+        viral_fix: "North Pole at Equator Hook + Predator vs Prey Quiz + Axial Tilt Wobble",
+        scenes: [
+          { scene_number: 1, badge: "NORTH POLE AT EQUATOR?! 🌙", spoken: "Because if the Moon disappeared tonight, Earth would eventually tip over so wildly that the North Pole could end up at the Equator!", visual_type: "moon_vanish" },
+          { scene_number: 2, badge: "TIDES DROP BY 66%! 🌊", spoken: "Without the Moon's gravity pulling our oceans, high tides would instantly shrink to just one-third of their normal size!", visual_type: "tide_drop" },
+          { scene_number: 3, badge: "COASTAL CRISIS! 🦀", spoken: "Those tides drive ocean currents and feed coastal ecosystems that three-quarters of humans near the coast rely on!", visual_type: "coral_clock" },
+          { scene_number: 4, badge: "PREDATORS OR PREY WIN?! 👇", spoken: "Quick quiz! In pitch-black moonless nights, who gets a huge survival boost: nighttime PREDATORS or their PREY? Comment now!", visual_type: "night_hunt" },
+          { scene_number: 5, badge: "23.4° TILT GOES WILD! 🌍", spoken: "Prey win because predators lose their moonlight! Worse, the Moon locks Earth at a steady twenty-three-point-four degree tilt.", visual_type: "tilt_lock" },
+          { scene_number: 6, badge: "SEASONS VANISH FOREVER! 🔄", spoken: "Without our lunar stabilizer, seasons would vanish into extreme ice ages and scorching heat, which is terrifying...", visual_type: "ice_equator" }
+        ]
+      }
+    ];
+
+    // -------------------------------------------------------------------------
+    // App State
+    // -------------------------------------------------------------------------
+    let activePresetIdx = 0;
+    let currentPlan = JSON.parse(JSON.stringify(PRESET_SHORTS[0]));
+    let activeSceneIdx = 0;
+    let isPlaying = false;
+    let isMuted = false;
+    let sceneProgress = 0; // 0.0 to 1.0
+    let lastFrameTime = performance.now();
+    let animFrameId = null;
+    let audioCtx = null;
+    let bgmInterval = null;
+
+    // -------------------------------------------------------------------------
+    // Toast Helper (No alert/confirm/prompt)
+    // -------------------------------------------------------------------------
+    function showToast(msg, icon = "✅") {
+      const box = document.getElementById("toastBox");
+      document.getElementById("toastMsg").textContent = msg;
+      document.getElementById("toastIcon").textContent = icon;
+      box.classList.remove("hidden");
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => box.classList.add("hidden"), 3400);
+    }
+
+    // -------------------------------------------------------------------------
+    // Tab Navigation
+    // -------------------------------------------------------------------------
+    function switchTab(tabName) {
+      const views = {
+        studio: document.getElementById("viewStudio"),
+        niche: document.getElementById("viewNiche"),
+        diag: document.getElementById("viewDiag"),
+        cloud: document.getElementById("viewCloud")
+      };
+      const btns = {
+        studio: document.getElementById("tabBtnStudio"),
+        niche: document.getElementById("tabBtnNiche"),
+        diag: document.getElementById("tabBtnDiag"),
+        cloud: document.getElementById("tabBtnCloud")
+      };
+      Object.keys(views).forEach(k => {
+        if (k === tabName) {
+          views[k].classList.remove("hidden");
+          btns[k].classList.add("tab-active");
+          btns[k].classList.remove("text-slate-300");
+        } else {
+          views[k].classList.add("hidden");
+          btns[k].classList.remove("tab-active");
+          btns[k].classList.add("text-slate-300");
+        }
+      });
+    }
+
+    // -------------------------------------------------------------------------
+    // Render Niche Selector Pills & Storyboard List
+    // -------------------------------------------------------------------------
+    function renderNichePills() {
+      const container = document.getElementById("nichePillContainer");
+      container.innerHTML = "";
+      PRESET_SHORTS.forEach((p, idx) => {
+        const active = idx === activePresetIdx;
+        const btn = document.createElement("button");
+        btn.className = `p-2.5 rounded-xl border text-left transition-all ${
+          active
+            ? "bg-red-500/20 border-red-500 text-white shadow-md"
+            : "bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-700"
+        }`;
+        btn.innerHTML = `
+          <div class="text-base mb-0.5">${p.icon}</div>
+          <div class="text-xs font-bold truncate">${p.niche_name}</div>
+        `;
+        btn.addEventListener("click", () => selectPresetByIndex(idx));
+        container.appendChild(btn);
+      });
+    }
+
+    function selectPresetByIndex(idx) {
+      stopPlayback();
+      activePresetIdx = idx;
+      currentPlan = JSON.parse(JSON.stringify(PRESET_SHORTS[idx]));
+      activeSceneIdx = 0;
+      sceneProgress = 0;
+      syncPlanToUI();
+      renderNichePills();
+      showToast(`Loaded US Niche: ${currentPlan.niche_name}`, "🎬");
+    }
+
+    function cyclePresetShort() {
+      const next = (activePresetIdx + 1) % PRESET_SHORTS.length;
+      selectPresetByIndex(next);
+    }
+
+    function syncPlanToUI() {
+      document.getElementById("activeNicheBadge").textContent = `${currentPlan.icon || "🔥"} ${currentPlan.niche_name}`;
+      document.getElementById("shortTitleInput").value = currentPlan.title;
+      document.getElementById("viralFixInput").value = currentPlan.viral_fix;
+      document.getElementById("shortDescInput").value = currentPlan.description;
+      document.getElementById("sceneCounterBadge").textContent = `Scene ${activeSceneIdx + 1} / ${currentPlan.scenes.length}`;
+      renderScenesList();
+    }
+
+    function updateMetadataFromInputs() {
+      currentPlan.title = document.getElementById("shortTitleInput").value;
+      currentPlan.description = document.getElementById("shortDescInput").value;
+    }
+
+    function renderScenesList() {
+      const list = document.getElementById("scenesListContainer");
+      list.innerHTML = "";
+      currentPlan.scenes.forEach((sc, idx) => {
+        const isCurrent = idx === activeSceneIdx;
+        const row = document.createElement("div");
+        row.className = `p-3 rounded-xl border transition-all cursor-pointer ${
+          isCurrent
+            ? "bg-slate-800/90 border-amber-400/70 shadow-md"
+            : "bg-slate-900/70 border-slate-800 hover:border-slate-700"
+        }`;
+        row.innerHTML = `
+          <div class="flex items-center justify-between gap-2 mb-1.5">
+            <span class="text-xs font-extrabold ${isCurrent ? "text-amber-300" : "text-slate-400"}">
+              SCENE ${sc.scene_number} ${idx === 0 ? "• 0–3s HOOK" : idx === 3 ? "• COMMENT TRIGGER" : idx === 5 ? "• INFINITE LOOP" : ""}
+            </span>
+            <span class="px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 text-[11px] font-bold">${sc.badge}</span>
+          </div>
+          <p class="text-xs text-slate-200 leading-relaxed">${sc.spoken}</p>
+        `;
+        row.addEventListener("click", () => {
+          activeSceneIdx = idx;
+          sceneProgress = 0;
+          document.getElementById("sceneCounterBadge").textContent = `Scene ${activeSceneIdx + 1} / ${currentPlan.scenes.length}`;
+          renderScenesList();
+          if (isPlaying) speakCurrentScene();
+        });
+        list.appendChild(row);
+      });
+    }
+
+    // -------------------------------------------------------------------------
+    // Web Speech API (US Voiceover) + Web Audio API Synth BGM
+    // -------------------------------------------------------------------------
+    function initAudioEngine() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) audioCtx = new AudioContextClass();
+      }
+      if (audioCtx && audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+    }
+
+    function playBgmPulse() {
+      if (isMuted || !isPlaying || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const notes = [110, 130.81, 146.83, 164.81, 196.0];
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(notes[activeSceneIdx % notes.length], audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.035, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.45);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.45);
+      } catch (e) {}
+    }
+
+    function speakCurrentScene() {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      if (isMuted || !isPlaying) return;
+
+      const sc = currentPlan.scenes[activeSceneIdx];
+      if (!sc) return;
+      const utter = new SpeechSynthesisUtterance(sc.spoken);
+      utter.lang = "en-US";
+      utter.rate = 1.08;
+      utter.pitch = 1.04;
+      const voices = window.speechSynthesis.getVoices();
+      const usVoice = voices.find(v => v.lang === "en-US" && (v.name.includes("Google") || v.name.includes("Natural") || v.name.includes("Christopher") || v.name.includes("Guy"))) || voices.find(v => v.lang.startsWith("en"));
+      if (usVoice) utter.voice = usVoice;
+      window.speechSynthesis.speak(utter);
+    }
+
+    function togglePlayShort() {
+      initAudioEngine();
+      if (isPlaying) {
+        stopPlayback();
+      } else {
+        isPlaying = true;
+        lastFrameTime = performance.now();
+        document.getElementById("playBtnIcon").textContent = "⏸";
+        document.getElementById("playBtnText").textContent = "Pause Short";
+        speakCurrentScene();
+        clearInterval(bgmInterval);
+        bgmInterval = setInterval(playBgmPulse, 520);
+      }
+    }
+
+    function stopPlayback() {
+      isPlaying = false;
+      document.getElementById("playBtnIcon").textContent = "▶";
+      document.getElementById("playBtnText").textContent = "Play With US Voice";
+      clearInterval(bgmInterval);
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    }
+
+    function toggleMuteAudio() {
+      isMuted = !isMuted;
+      const btn = document.getElementById("btnMuteAudio");
+      btn.textContent = isMuted ? "🔇 Voice + BGM: MUTED" : "🔊 Voice + BGM: ON";
+      if (isMuted && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      } else if (!isMuted && isPlaying) {
+        speakCurrentScene();
+      }
+    }
+
+    function stepScene(delta) {
+      activeSceneIdx = (activeSceneIdx + delta + currentPlan.scenes.length) % currentPlan.scenes.length;
+      sceneProgress = 0;
+      document.getElementById("sceneCounterBadge").textContent = `Scene ${activeSceneIdx + 1} / ${currentPlan.scenes.length}`;
+      renderScenesList();
+      if (isPlaying) speakCurrentScene();
+    }
+
+    // -------------------------------------------------------------------------
+    // 9:16 Vertical Canvas Renderer (Ken Burns Zoom + 3D Scene Art + Captions)
+    // -------------------------------------------------------------------------
+    function drawShortsCanvas(now) {
+      const canvas = document.getElementById("shortsCanvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const W = canvas.width;
+      const H = canvas.height;
+
+      const dt = (now - lastFrameTime) / 1000;
+      lastFrameTime = now;
+
+      if (isPlaying) {
+        const sceneDuration = 6.8; // ~7 seconds per scene => ~42s Short
+        sceneProgress += dt / sceneDuration;
+        if (sceneProgress >= 1.0) {
+          sceneProgress = 0;
+          activeSceneIdx = (activeSceneIdx + 1) % currentPlan.scenes.length;
+          document.getElementById("sceneCounterBadge").textContent = `Scene ${activeSceneIdx + 1} / ${currentPlan.scenes.length}`;
+          renderScenesList();
+          speakCurrentScene();
+        }
+      }
+
+      const sc = currentPlan.scenes[activeSceneIdx] || currentPlan.scenes[0];
+      const colors = currentPlan.theme_colors || ["#0f172a", "#1e3a8a", "#f97316"];
+
+      ctx.save();
+      // Ken Burns Smooth Zoom-In (1.0x -> 1.14x)
+      const zoom = 1.0 + 0.14 * sceneProgress;
+      ctx.translate(W / 2, H / 2);
+      ctx.scale(zoom, zoom);
+      ctx.translate(-W / 2, -H / 2);
+
+      // 1. Dynamic 3D-Style Radial & Linear Gradient Backdrop
+      const grad = ctx.createLinearGradient(0, 0, 0, H);
+      grad.addColorStop(0, colors[0]);
+      grad.addColorStop(0.55, colors[1]);
+      grad.addColorStop(1, "#020617");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      // 2. Scene-Specific Procedural 3D-Shaded Centerpiece Illustration
+      const cx = W / 2;
+      const cy = H * 0.44;
+      const pulse = Math.sin(now * 0.004) * 14;
+
+      // Glowing Aura Sphere
+      const aura = ctx.createRadialGradient(cx, cy, 20, cx, cy, 220 + pulse);
+      aura.addColorStop(0, colors[2] + "cc");
+      aura.addColorStop(0.5, colors[1] + "55");
+      aura.addColorStop(1, "transparent");
+      ctx.fillStyle = aura;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 220 + pulse, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Animated 3D Rings / Tunnel Layers
+      for (let i = 4; i >= 1; i--) {
+        const r = i * 42 + ((now * 0.04) % 42);
+        ctx.strokeStyle = `rgba(255, 255, 255, ${0.12 + (4 - i) * 0.07})`;
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // Floating Glowing Particles
+      for (let p = 0; p < 18; p++) {
+        const px = (Math.sin(p * 73.1 + now * 0.0008) * 0.45 + 0.5) * W;
+        const py = ((p * 67 + now * 0.06) % H);
+        const pr = 2.5 + (p % 4);
+        ctx.fillStyle = p % 2 === 0 ? "rgba(253, 224, 71, 0.75)" : "rgba(255, 255, 255, 0.55)";
+        ctx.beginPath();
+        ctx.arc(px, py, pr, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Central 3D Hero Icon / Character Badge
+      ctx.font = "110px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      const sceneEmojis = ["🌍", "👇", "🔥", "🌋", "🚀", "⏱️"];
+      const badgeParts = sc.badge.split(" ");
+      const lastToken = badgeParts[badgeParts.length - 1];
+      const heroIcon = lastToken && lastToken.length <= 4 ? lastToken : (sceneEmojis[activeSceneIdx] || "✨");
+      ctx.fillText(heroIcon, cx, cy + Math.sin(now * 0.005) * 10);
+
+      ctx.restore();
+
+      // 3. Top Curiosity Hook Yellow Pill Badge (Fixed Overlay)
+      ctx.save();
+      const pillW = W * 0.84;
+      const pillH = 66;
+      const pillX = (W - pillW) / 2;
+      const pillY = 74;
+
+      ctx.fillStyle = "rgba(250, 204, 21, 0.96)";
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.roundRect(pillX, pillY, pillW, pillH, 20);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = "#090d16";
+      ctx.font = "900 27px 'Inter', sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(sc.badge.toUpperCase(), W / 2, pillY + pillH / 2);
+      ctx.restore();
+
+      // 4. Center-Lower Dynamic Viral Word-Chunk Captions
+      ctx.save();
+      const words = sc.spoken.split(" ");
+      const chunkSize = 4;
+      const chunks = [];
+      for (let i = 0; i < words.length; i += chunkSize) {
+        chunks.push(words.slice(i, i + chunkSize).join(" "));
+      }
+      const activeChunkIdx = Math.min(Math.floor(sceneProgress * chunks.length), chunks.length - 1);
+      const activeCaption = (chunks[activeChunkIdx] || "").toUpperCase();
+
+      const capBoxW = W * 0.88;
+      const capBoxH = 115;
+      const capBoxX = (W - capBoxW) / 2;
+      const capBoxY = H - 235;
+
+      ctx.fillStyle = "rgba(9, 13, 22, 0.84)";
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.28)";
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.roundRect(capBoxX, capBoxY, capBoxW, capBoxH, 22);
+      ctx.fill();
+      ctx.stroke();
+
+      // Word Wrap inside Caption Box
+      ctx.font = "800 30px 'Inter', sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = "#000000";
+      ctx.fillStyle = "#fde047";
+      ctx.strokeText(activeCaption, W / 2, capBoxY + capBoxH / 2);
+      ctx.fillText(activeCaption, W / 2, capBoxY + capBoxH / 2);
+      ctx.restore();
+
+      // 5. Bottom Retention Progress Bar
+      const totalProgress = (activeSceneIdx + sceneProgress) / currentPlan.scenes.length;
+      ctx.fillStyle = "rgba(255,255,255,0.18)";
+      ctx.fillRect(0, H - 12, W, 12);
+      ctx.fillStyle = "#ef4444";
+      ctx.fillRect(0, H - 12, W * totalProgress, 12);
+
+      animFrameId = requestAnimationFrame(drawShortsCanvas);
+    }
+
+    // -------------------------------------------------------------------------
+    // Record & Export 9:16 Video (.webm) Directly in Browser
+    // -------------------------------------------------------------------------
+    function recordAndDownloadShort() {
+      const canvas = document.getElementById("shortsCanvas");
+      const statusEl = document.getElementById("recordStatusText");
+      if (!canvas || typeof canvas.captureStream !== "function" || typeof MediaRecorder === "undefined") {
+        showToast("Browser MediaRecorder not supported in this view — use the Python script!", "⚠️");
+        return;
+      }
+
+      stopPlayback();
+      activeSceneIdx = 0;
+      sceneProgress = 0;
+      togglePlayShort();
+
+      const stream = canvas.captureStream(30);
+      const chunks = [];
+      let recorder;
+      try {
+        recorder = new MediaRecorder(stream, { mimeType: "video/webm" });
+      } catch (e) {
+        recorder = new MediaRecorder(stream);
+      }
+
+      recorder.ondataavailable = e => {
+        if (e.data && e.data.size > 0) chunks.push(e.data);
+      };
+
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: "video/webm" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `viral_us_short_${Date.now()}.webm`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        statusEl.textContent = "✅ 9:16 Short Video exported and downloaded!";
+        showToast("9:16 Viral Short Video downloaded!", "🎉");
+      };
+
+      recorder.start();
+      statusEl.textContent = "🔴 Recording 12-second preview clip... Keep tab open!";
+      showToast("Recording 9:16 Short preview (12 sec)...", "🔴");
+
+      setTimeout(() => {
+        if (recorder.state === "recording") recorder.stop();
+      }, 12000);
+    }
+
+    // -------------------------------------------------------------------------
+    // Tab 2: Live Gemini API or Offline Smart Script Generator
+    // -------------------------------------------------------------------------
+    async function generateCustomShortPlan() {
+      const apiKey = document.getElementById("geminiKeyInput").value.trim();
+      const topic = document.getElementById("customTopicInput").value.trim() || "What If Humans Could Breathe Underwater?";
+      const nicheId = document.getElementById("customNicheSelect").value;
+      const btn = document.getElementById("btnGenerateCustom");
+
+      btn.disabled = true;
+      btn.textContent = "⏳ Generating 6-Scene Viral Short...";
+
+      if (apiKey) {
+        try {
+          const prompt = `Create a 6-scene 50-second US YouTube Short script about "${topic}" in the niche "${nicheId}" appealing to both kids and adults. Return ONLY valid JSON with keys: title, description, viral_fix, scenes (array of 6 objects with scene_number, badge, spoken).`;
+          const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { responseMimeType: "application/json" }
+            })
+          });
+          const data = await resp.json();
+          const parsed = JSON.parse(data.candidates[0].content.parts[0].text);
+          currentPlan = {
+            niche_id: nicheId,
+            niche_name: "Custom Gemini AI Short",
+            theme_colors: ["#1e1b4b", "#4338ca", "#f43f5e"],
+            icon: "✨",
+            title: parsed.title || `${topic.slice(0, 38)} 🤯 #Shorts`,
+            description: parsed.description || `${topic} Explained in 50 seconds! #Shorts #curiosity #whatif #facts`,
+            viral_fix: parsed.viral_fix || "Custom Gemini 0-3s Hook + Mid-Video Question + Loop Ending",
+            scenes: parsed.scenes
+          };
+          activeSceneIdx = 0;
+          sceneProgress = 0;
+          syncPlanToUI();
+          switchTab("studio");
+          showToast("Generated fresh Short via Gemini API!", "✨");
+          btn.disabled = false;
+          btn.textContent = "✨ Generate 6-Scene Viral Short & Load Into Studio";
+          return;
+        } catch (err) {
+          showToast("Gemini key check failed — generating smart instant script!", "⚡");
+        }
+      }
+
+      // Smart Instant Offline Script Builder for any topic
+      currentPlan = {
+        niche_id: nicheId,
+        niche_name: "Custom US Viral Short",
+        theme_colors: ["#1e1b4b", "#312e81", "#f59e0b"],
+        icon: "🚀",
+        title: `${topic.slice(0, 38)} 🤯 #Shorts`,
+        description: `Have you ever wondered about ${topic}? Watch till the end for the shocking scientific twist! #Shorts #whatif #curiosity #science #facts`,
+        viral_fix: "Applied 0-3s Shock Question + Scene 4 Comment Challenge + Infinite Loop",
+        scenes: [
+          { scene_number: 1, badge: "STOP SCROLLING! 🤯", spoken: `Have you ever wondered what would really happen if ${topic.toLowerCase().replace(/\?$/, "")}?` },
+          { scene_number: 2, badge: "FIRST 5 SECONDS ⚡", spoken: `In the very first five seconds, everything around you would start changing faster than you can blink!` },
+          { scene_number: 3, badge: "SCIENTISTS SHOCKED 🔬", spoken: `Researchers ran a supercomputer simulation on ${topic.toLowerCase().slice(0, 28)} and found a crazy twist.` },
+          { scene_number: 4, badge: "WHAT WOULD YOU DO? 💬", spoken: `Only one percent of people would know how to react! What would you do first? Tell me in the comments!` },
+          { scene_number: 5, badge: "THE BIG PAYOFF 🌍", spoken: `Within twenty-four hours, the entire planet would adapt in a way nobody in history ever expected!` },
+          { scene_number: 6, badge: "INFINITE LOOP 🔄", spoken: `And that mind-blowing chain reaction is the exact reason why millions of people still ask...` }
+        ]
+      };
+      activeSceneIdx = 0;
+      sceneProgress = 0;
+      syncPlanToUI();
+      switchTab("studio");
+      showToast(`Generated 6-scene Short for "${topic}"!`, "🚀");
+      btn.disabled = false;
+      btn.textContent = "✨ Generate 6-Scene Viral Short & Load Into Studio";
+    }
+
+    // -------------------------------------------------------------------------
+    // Tab 3: Viral Diagnostics Engine ("Why Isn't My Video Viral?")
+    // -------------------------------------------------------------------------
+    function runViralDiagnostics() {
+      const views = parseInt(document.getElementById("inpDiagViews").value, 10);
+      const swipe = parseInt(document.getElementById("inpDiagSwipe").value, 10);
+      const ret = parseInt(document.getElementById("inpDiagRet").value, 10);
+      const likes = parseFloat(document.getElementById("inpDiagLikes").value);
+      const comments = parseFloat(document.getElementById("inpDiagComments").value);
+
+      document.getElementById("lblDiagViews").textContent = `${views.toLocaleString()} views`;
+      document.getElementById("lblDiagSwipe").textContent = `${swipe}% Viewed`;
+      document.getElementById("lblDiagRet").textContent = `${ret}% APV`;
+      document.getElementById("lblDiagLikes").textContent = `${likes.toFixed(1)}% Likes`;
+      document.getElementById("lblDiagComments").textContent = `${comments.toFixed(2)}% Comments`;
+
+      const issues = [];
+      let score = 100;
+
+      if (swipe < 72) {
+        score -= 28;
+        issues.push({
+          severity: "CRITICAL BOTTLENECK",
+          color: "border-red-500/50 bg-red-500/10 text-red-200",
+          title: `High Swipe-Away Rate (${100 - swipe}% Swiped Away in 0–3s)`,
+          fix: "Viewers are scrolling past before Scene 2. Fix: Start Scene 1 with a direct 'What If You...' visual shock + bold yellow top badge."
+        });
+      }
+      if (ret < 95) {
+        score -= 22;
+        issues.push({
+          severity: "RETENTION DROP",
+          color: "border-amber-500/50 bg-amber-500/10 text-amber-200",
+          title: `Average Percentage Viewed (${ret}%) Below 95% Viral Threshold`,
+          fix: "Shorts need >95% APV to break past 2,000 views. Fix: Trim total length to 45–50s and link Scene 6 directly back into Scene 1 for an infinite loop."
+        });
+      }
+      if (likes < 3.8) {
+        score -= 15;
+        issues.push({
+          severity: "LOW LIKE VELOCITY",
+          color: "border-amber-500/50 bg-amber-500/10 text-amber-200",
+          title: `Like-to-View Ratio (${likes.toFixed(1)}%) Below 4.0% Benchmark`,
+          fix: "Add a surprising micro-fact reveal in Scene 3 so viewers double-tap before the ending."
+        });
+      }
+      if (comments < 0.14) {
+        score -= 15;
+        issues.push({
+          severity: "LOW COMMENT TRIGGER",
+          color: "border-amber-500/50 bg-amber-500/10 text-amber-200",
+          title: `Comment Engagement (${comments.toFixed(2)}%) Too Low For 100K+ Pool`,
+          fix: "Inject an easy A/B choice or survival question in Scene 4 ('Which door would you pick? Comment 1, 2, or 3!')."
+        });
+      }
+
+      if (issues.length === 0) {
+        issues.push({
+          severity: "READY FOR VIRAL BREAKOUT",
+          color: "border-emerald-500/50 bg-emerald-500/10 text-emerald-200",
+          title: "All 4 YouTube Shorts Algorithm Signals Are Above US Seed Thresholds!",
+          fix: "Maintain consistent daily uploads at 3:30 PM US Eastern Time (1:00 AM IST)."
+        });
+      }
+
+      score = Math.max(15, score);
+      const badge = document.getElementById("diagScoreBadge");
+      badge.textContent = `${score} / 100`;
+      badge.className = `text-2xl font-extrabold ${score >= 80 ? "text-emerald-400" : score >= 55 ? "text-amber-400" : "text-red-400"}`;
+
+      const listEl = document.getElementById("diagIssuesList");
+      listEl.innerHTML = issues.map(item => `
+        <div class="p-3.5 rounded-xl border ${item.color} space-y-1">
+          <div class="text-[10px] font-extrabold uppercase tracking-wider opacity-80">${item.severity}</div>
+          <div class="text-xs sm:text-sm font-bold text-white">${item.title}</div>
+          <div class="text-xs opacity-90"><strong>Auto-Fix:</strong> ${item.fix}</div>
+        </div>
+      `).join("");
+    }
+
+    function applyDiagnosticsFixToStudio() {
+      currentPlan.scenes[0].badge = "STOP SCROLLING! ⚠️";
+      if (!currentPlan.scenes[3].spoken.toLowerCase().includes("comment")) {
+        currentPlan.scenes[3].spoken += " What would you pick? Tell me in the comments!";
+      }
+      currentPlan.viral_fix = "Auto-Fixed: 0-3s Anti-Swipe Badge + Scene 4 Comment Trigger + Loop Ending";
+      syncPlanToUI();
+      switchTab("studio");
+      showToast("Viral Diagnostics Fixes applied to your active Short!", "⚡");
+    }
+
+    // -------------------------------------------------------------------------
+    // Copy & Setup Checklist Helpers
+    // -------------------------------------------------------------------------
+    function copyTextSafe(text, successMsg) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => showToast(successMsg)).catch(() => fallbackCopy(text, successMsg));
+      } else {
+        fallbackCopy(text, successMsg);
+      }
+    }
+
+    function fallbackCopy(text, successMsg) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+      showToast(successMsg);
+    }
+
+    function copySeoMetadata() {
+      const payload = `TITLE:\n${currentPlan.title}\n\nDESCRIPTION:\n${currentPlan.description}`;
+      copyTextSafe(payload, "Copied US Title, Description & #Shorts tags!");
+    }
+
+    function copyConfigText(elId, msg) {
+      const txt = document.getElementById(elId).textContent;
+      copyTextSafe(txt, msg);
+    }
+
+    function updateSetupProgress() {
+      const checks = document.querySelectorAll(".setup-check");
+      let done = 0;
+      checks.forEach(c => { if (c.checked) done++; });
+      document.getElementById("setupProgressBadge").textContent = `${done} / ${checks.length} Done`;
+      if (done === checks.length) {
+        showToast("All 4 cloud setup steps completed!", "🎉");
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Initialize App on Load
+    // -------------------------------------------------------------------------
+    window.addEventListener("DOMContentLoaded", () => {
+      renderNichePills();
+      syncPlanToUI();
+      runViralDiagnostics();
+      lastFrameTime = performance.now();
+      animFrameId = requestAnimationFrame(drawShortsCanvas);
+    });
+  </script>
+</body>
+</html>
