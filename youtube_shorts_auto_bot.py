@@ -731,6 +731,7 @@ jobs:
 def main():
     parser = argparse.ArgumentParser(description="100% Free Automated Daily YouTube Shorts Bot")
     parser.add_argument("--dry-run", action="store_true", help="Generate video locally without uploading")
+    parser.add_argument("--upload-approved", action="store_true", help="Upload after review and typed confirmation")
     parser.add_argument("--init-ci", action="store_true", help="Create GitHub Actions workflow & requirements.txt")
     args = parser.parse_args()
 
@@ -756,11 +757,20 @@ def main():
     print("\n=== STEP 3 & 4: Generating Free US Voiceover, 3D Visuals & Editing Short ===")
     video_path = build_short_video(plan)
 
-    if args.dry_run:
-        print(f"\n[+] Dry-run complete! Video saved at: {video_path}")
-    else:
-        print("\n=== STEP 5: Uploading to YouTube Channel ===")
+    manifest_path = save_manual_review_manifest(plan, video_path)
+    print_manual_review_summary(plan, video_path, manifest_path)
+
+    if args.upload_approved:
+        youtube = youtube or get_youtube_service()
+        if youtube is None:
+            raise RuntimeError("YouTube OAuth credentials are required for --upload-approved.")
+        if input("Type UPLOAD to confirm reviewed video and metadata: ").strip() != "UPLOAD":
+            print("Upload cancelled.")
+            return
         upload_short_to_youtube(youtube, video_path, plan)
+    else:
+        print("Upload skipped. Review video, then use --upload-approved.")
+
 
 
 
