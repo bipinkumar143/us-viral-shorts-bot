@@ -276,7 +276,7 @@ def generate_daily_short_plan(diagnostics: Dict, us_trends: List[str]) -> Dict:
     recent_titles = [v["title"] for v in diagnostics.get("recent_videos", [])]
 
     prompt = f"""
-You are an elite US YouTube Shorts Viral Showrunner specializing in high-retention Family-Friendly 3D Animated Shorts (appealing to both kids aged 8-15 and US adults, similar to Zack D. Films, Bright Side Shorts, and Ridddle).
+You are an elite US YouTube Shorts Viral Showrunner specializing in high-retention Family-Friendly 3D Animated Shorts (appealing to both kids aged 8-15 and US adults, similar to Zack D. Films, Bright [...]
 
 TODAY'S US GOOGLE TRENDS:
 {json.dumps(us_trends)}
@@ -288,8 +288,8 @@ RECENTLY UPLOADED TITLES (DO NOT REPEAT THESE):
 {json.dumps(recent_titles)}
 
 VIRAL DIAGNOSTICS FROM PAST VIDEOS (MUST FIX THESE IN TODAY'S SCRIPT):
-Diagnosis: {json.dumps(diagnostics.get("why_not_viral_diagnosis", []))}
-Directives: {json.dumps(diagnostics.get("improvement_directives", []))}
+Diagnosis: {json.dumps(diagnostics.get('why_not_viral_diagnosis', []))}
+Directives: {json.dumps(diagnostics.get('improvement_directives', []))}
 
 TASK:
 1. Pick the single highest-potential niche for today from CANDIDATE HIGH-RPM US NICHES (blend with a safe curiosity angle from TODAY'S US GOOGLE TRENDS if relevant, or pick an ultra-viral evergreen mystery).
@@ -315,7 +315,7 @@ Return ONLY valid JSON matching this exact schema:
       "scene_number": 1,
       "spoken_text": "What would actually happen if you jumped out of a plane and tried to eat a cloud?",
       "caption_highlight": "EAT A CLOUD?! ☁️",
-      "image_prompt": "3D Pixar Disney animation style, a curious young skydiver floating next to a glowing fluffy white cumulus cloud in a bright blue sky, vibrant cinematic lighting, vertical 9:16 composition, no text"
+      "image_prompt": "3D Pixar Disney animation style, a curious young skydiver floating next to a glowing fluffy white cumulus cloud in a bright blue sky, vibrant cinematic lighting, vertical 9:16 composition, expressive characters, no text, no watermarks"
     }}
   ]
 }}
@@ -385,37 +385,37 @@ Return ONLY valid JSON matching this exact schema:
                 "scene_number": 1,
                 "spoken_text": "What would actually happen if you tried to dig a tunnel straight through the Earth?",
                 "caption_highlight": "DIG THROUGH EARTH?! 🌍",
-                "image_prompt": "3D Pixar Disney animation style, cute adventurous kid holding a glowing futuristic laser drill standing over a glowing deep hole in the ground, vibrant cinematic lighting, vertical 9:16 composition, no text",
+                "image_prompt": "3D Pixar Disney animation style, cute adventurous kid holding a glowing futuristic laser drill standing over a glowing deep hole in the ground, vibrant cinematic lighting, vertical 9:16 composition, expressive characters, no text, no watermarks",
             },
             {
                 "scene_number": 2,
                 "spoken_text": "At just thirty feet down, you would pass all house foundations and underground pipes.",
                 "caption_highlight": "30 FEET DOWN 👇",
-                "image_prompt": "3D Pixar animation style, underground cross section showing glowing pipes, tree roots, and colorful soil layers with a tiny explorer tunneling down, vertical 9:16 composition, no text",
+                "image_prompt": "3D Pixar animation style, underground cross section showing glowing pipes, tree roots, and colorful soil layers with a tiny explorer tunneling down, vertical 9:16 composition, vibrant lighting, no text, no watermarks",
             },
             {
                 "scene_number": 3,
                 "spoken_text": "At seven miles deep, you reach the Kola Superdeep Borehole, the deepest hole humans ever dug!",
                 "caption_highlight": "7.5 MILES DEEP! 🔥",
-                "image_prompt": "3D Pixar animation style, massive scientific drill rig glowing inside a deep subterranean cavern with red hot glowing crystals, vertical 9:16 composition, no text",
+                "image_prompt": "3D Pixar animation style, massive scientific drill rig glowing inside a deep subterranean cavern with red hot glowing crystals, vertical 9:16 composition, no text, no watermarks",
             },
             {
                 "scene_number": 4,
                 "spoken_text": "Down here, solid rock hits three hundred and fifty degrees and acts like sticky plastic! How deep do you think you could survive? Comment below!",
                 "caption_highlight": "MELTING ROCK! 🌋",
-                "image_prompt": "3D Pixar animation style, glowing orange molten plastic-like rock bubbling around a heat-shielded futuristic drill pod underground, dramatic lighting, vertical 9:16 composition, no text",
+                "image_prompt": "3D Pixar animation style, glowing orange molten plastic-like rock bubbling around a heat-shielded futuristic drill pod underground, dramatic lighting, vertical 9:16 composition, expressive characters, no text, no watermarks",
             },
             {
                 "scene_number": 5,
                 "spoken_text": "If you somehow wore an indestructible suit and jumped in, gravity would pull you at eighteen thousand miles per hour!",
                 "caption_highlight": "18,000 MPH! 🚀",
-                "image_prompt": "3D Pixar animation style, hero in a glowing silver space suit zooming fast through a futuristic glowing tunnel near the bright golden core of the Earth, vertical 9:16 composition, no text",
+                "image_prompt": "3D Pixar animation style, hero in a glowing silver space suit zooming fast through a futuristic glowing tunnel near the bright golden core of the Earth, vertical 9:16 composition, vibrant lighting, no text, no watermarks",
             },
             {
                 "scene_number": 6,
                 "spoken_text": "In just forty-two minutes you would pop out on the other side, which is why scientists still ask...",
                 "caption_highlight": "42 MINUTES! ⏱️",
-                "image_prompt": "3D Pixar animation style, explorer popping out of a glowing tunnel on the opposite side of the globe under a starry sky, vibrant colors, vertical 9:16 composition, no text",
+                "image_prompt": "3D Pixar animation style, explorer popping out of a glowing tunnel on the opposite side of the globe under a starry sky, vibrant colors, vertical 9:16 composition, no text, no watermarks",
             },
         ],
     }
@@ -731,7 +731,6 @@ jobs:
 def main():
     parser = argparse.ArgumentParser(description="100% Free Automated Daily YouTube Shorts Bot")
     parser.add_argument("--dry-run", action="store_true", help="Generate video locally without uploading")
-    parser.add_argument("--upload-approved", action="store_true", help="Upload after review and typed confirmation")
     parser.add_argument("--init-ci", action="store_true", help="Create GitHub Actions workflow & requirements.txt")
     args = parser.parse_args()
 
@@ -757,98 +756,12 @@ def main():
     print("\n=== STEP 3 & 4: Generating Free US Voiceover, 3D Visuals & Editing Short ===")
     video_path = build_short_video(plan)
 
-    manifest_path = save_manual_review_manifest(plan, video_path)
-    print_manual_review_summary(plan, video_path, manifest_path)
+    if args.dry_run:
+        print(f"\n[+] Dry-run complete! Video saved at: {video_path}")
+        return
 
-    if args.upload_approved:
-        youtube = youtube or get_youtube_service()
-        if youtube is None:
-            raise RuntimeError("YouTube OAuth credentials are required for --upload-approved.")
-        if input("Type UPLOAD to confirm reviewed video and metadata: ").strip() != "UPLOAD":
-            print("Upload cancelled.")
-            return
-        upload_short_to_youtube(youtube, video_path, plan)
-    else:
-        print("Upload skipped. Review video, then use --upload-approved.")
-
-
-
-
-# ---------------------------------------------------------------------------
-# Upgrade: safe manual-review workflow helpers (v2)
-# ---------------------------------------------------------------------------
-# These helpers deliberately do NOT upload. They validate a generated plan,
-# create a review manifest, and only allow a human-approved upload command.
-PLAN_SCHEMA_VERSION = 2
-REVIEW_DIR = Path("review_queue")
-
-
-def validate_short_plan(plan: Dict) -> List[str]:
-    """Return validation errors; an empty list means structurally valid."""
-    errors: List[str] = []
-    if not isinstance(plan, dict):
-        return ["Plan must be a JSON object."]
-    if not isinstance(plan.get("title"), str) or not plan["title"].strip():
-        errors.append("Missing title.")
-    scenes = plan.get("scenes")
-    if not isinstance(scenes, list) or len(scenes) != 6:
-        errors.append("Plan must contain exactly six scenes.")
-        return errors
-    for index, scene in enumerate(scenes, start=1):
-        if not isinstance(scene, dict):
-            errors.append(f"Scene {index} must be an object.")
-            continue
-        if not isinstance(scene.get("spoken_text"), str) or not scene["spoken_text"].strip():
-            errors.append(f"Scene {index}: spoken_text is missing.")
-        if not isinstance(scene.get("image_prompt"), str) or not scene["image_prompt"].strip():
-            errors.append(f"Scene {index}: image_prompt is missing.")
-        if not isinstance(scene.get("caption_highlight"), str) or not scene["caption_highlight"].strip():
-            errors.append(f"Scene {index}: caption_highlight is missing.")
-    tags = plan.get("tags", [])
-    if not isinstance(tags, list) or any(not isinstance(tag, str) for tag in tags):
-        errors.append("Tags must be a list of strings.")
-    return errors
-
-
-def save_manual_review_manifest(plan: Dict, video_path: Path) -> Path:
-    """Save metadata for a person to review before any YouTube upload."""
-    errors = validate_short_plan(plan)
-    if errors:
-        raise ValueError("Plan validation failed: " + "; ".join(errors))
-    if not video_path.exists() or video_path.stat().st_size == 0:
-        raise FileNotFoundError(f"Rendered video missing or empty: {video_path}")
-    REVIEW_DIR.mkdir(parents=True, exist_ok=True)
-    manifest = {
-        "schema_version": PLAN_SCHEMA_VERSION,
-        "created_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-        "status": "PENDING_HUMAN_APPROVAL",
-        "video_file": str(video_path.resolve()),
-        "title": plan.get("title", ""),
-        "description": plan.get("description", ""),
-        "tags": plan.get("tags", []),
-        "made_for_kids": None,
-        "checks": {
-            "video_exists": True,
-            "plan_schema_valid": True,
-            "human_content_review_required": True,
-            "audience_setting_review_required": True,
-        },
-        "upload_allowed": False,
-    }
-    safe_name = re.sub(r"[^a-zA-Z0-9_-]+", "_", str(plan.get("title", "short")))[:60]
-    output = REVIEW_DIR / f"{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}_{safe_name}.json"
-    output.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
-    return output
-
-
-def print_manual_review_summary(plan: Dict, video_path: Path, manifest_path: Path) -> None:
-    """Print a clear hand-off; this function never uploads."""
-    print("\\n=== MANUAL REVIEW REQUIRED ===")
-    print(f"Video: {video_path.resolve()}")
-    print(f"Title: {plan.get('title', '(missing)')}")
-    print(f"Review manifest: {manifest_path.resolve()}")
-    print("Review factual accuracy, rights, captions, audio, and audience designation.")
-    print("No video was uploaded. Upload only after explicit human approval.")
+    print("\n=== STEP 5: Uploading to YouTube Channel ===")
+    upload_short_to_youtube(youtube, video_path, plan)
 
 
 if __name__ == "__main__":
